@@ -18,7 +18,7 @@ for (index, line) in enumerate(lines)
         cubes = split(game, ",")
         for cube in cubes
             n_col = split(cube, " ")
-            rgb[dict[n_col[3]]] += parse(Int, n_col[2])
+            rgb[dict[n_col[3]]] = parse(Int, n_col[2])
         end
         indices = findall(rgb .> n_rgb)
         n_rgb[indices] = rgb[indices]
