@@ -1,7 +1,7 @@
 using Logging
 
-debug_logger = ConsoleLogger(stderr, Logging.Debug)
-# debug_logger = ConsoleLogger(stderr, Logging.Error)
+# debug_logger = ConsoleLogger(stderr, Logging.Debug)
+debug_logger = ConsoleLogger(stderr, Logging.Error)
 global_logger(debug_logger)
 
 dict = Dict("red" => 1, "green" => 2, "blue" => 3)
