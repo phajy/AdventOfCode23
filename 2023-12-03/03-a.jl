@@ -15,13 +15,13 @@ for (y, line) in enumerate(lines)
         # check to see if number is valid
         for x in range(number.offset, number.offset + length(number.match) - 1)
             for cx in range(x-1,x+1)
-                cx = max(cx, 1)
-                cx = min(cx, length(line))
                 for cy in range(y-1,y+1)
-                    cy = max(cy, 1)
-                    cy = min(cy, length(lines))
-                    if match(r"[\d.]", string(lines[cy][cx])) == nothing
-                        ok = true
+                    if checkbounds(Bool, lines, cy)
+                        if checkbounds(Bool, lines[cy], cx)
+                            if match(r"[\d.]", string(lines[cy][cx])) == nothing
+                                ok = true
+                            end
+                        end
                     end
                 end
             end
