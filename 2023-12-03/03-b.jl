@@ -23,7 +23,7 @@ for (y, line) in enumerate(lines)
                             # we've found a digit; now find the number
                             numbers = eachmatch(r"\d+", lines[cy])
                             for number in numbers
-                                # see if this overlaps with the desired digig
+                                # see if this overlaps with the desired digit
                                 if number.offset <= cx <= number.offset + length(number.match) - 1
                                     coords_and_val = (number.offset, cy, parse(Int, number.match))
                                     if coords_and_val ∉ found_numbers
