@@ -10,3 +10,4 @@
 - 02: A dictionary, `Dict`, was helpful.
 - 03: `checkbounds` to check array bounds. Can use `∉` which is nice.
 - 04: CSV reader has a boolean option `ignorerepeated`.
+- 05:
