@@ -14,4 +14,4 @@
 - 06: Shameless brute force solution as an antidote to 05. Used `replace` to get rid of the spaces.
 - 07: Sorting.
 - 08: Mapping file didn't start at AAA. [`lcm`](https://docs.julialang.org/en/v1/base/math/#Base.lcm) - yay! And `falses`.
-- 09: 
+- 09: `pushfirst!`
