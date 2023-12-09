@@ -39,46 +39,32 @@ function hand_type(cards)
     n_cards = sort(n_cards, rev=true)
     # add jokers where they help the most
     n_cards[1] += n_jokers
-    strongest = 0
     if n_cards[1] == 5
         @debug "Five of a kind (7)"
-        strongest = 7
+        return 7
     end
     if n_cards[1] == 4
-        if 6 > strongest
-            @debug "Four of a kind (6)"
-            strongest = 6
-        end
+        @debug "Four of a kind (6)"
+        return 6
     end
     if n_cards[1] == 3 && n_cards[2] == 2
-        if 5 > strongest
-            @debug "Full house (5)"
-            strongest = 5
-        end
+        @debug "Full house (5)"
+        return 5
     end
     if n_cards[1] == 3
-        if 4 > strongest
-            @debug "Three of a kind (4)"
-            strongest = 4
-        end
+        @debug "Three of a kind (4)"
+        return 4
     end 
     if n_cards[1] == 2 && n_cards[2] == 2
-        if 3 > strongest
-            @debug "Two pairs (3)"
-            strongest = 3
-        end
+        @debug "Two pairs (3)"
+        return 3
     end
     if n_cards[1] == 2
-        if 2 > strongest
-            @debug "One pair (2)"
-            strongest = 2
-        end
+        @debug "One pair (2)"
+        return 2
     end
-    if 1 > strongest
-        @debug "High card (1)"
-        strongest = 1
-    end
-    return strongest
+    @debug "High card (1)"
+    return 1
 end
 
 # return true if hand_1 is less than hand_2
