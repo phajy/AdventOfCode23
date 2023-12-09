@@ -1,6 +1,6 @@
 using Logging
 
-debug_logger = ConsoleLogger(stderr, Logging.Debug)
+debug_logger = ConsoleLogger(stderr, Logging.Error)
 global_logger(debug_logger)
 
 # filename = "2023-12-08/08-b-test.txt"
