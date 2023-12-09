@@ -35,7 +35,7 @@ steps = 1
 done = falses(length(pos))
 n_steps = zeros(Int, length(pos))
 while false ∈ done
-    for i in range(1,length(pos))
+    for i in range(1, length(pos))
         instructions[index] == 'L' ? pos[i] = lr[pos[i]][1] : pos[i] = lr[pos[i]][2]
         if lines[pos[i]+2][3] == 'Z'
             done[i] = true
