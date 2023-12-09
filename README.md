@@ -12,3 +12,4 @@
 - 04: CSV reader has a boolean option `ignorerepeated`.
 - 05: It can be annoying doing part A before part B - ha ha. Need to get better at using the "!" convention in function names that mutate their arguments. This one was tricky!
 - 06: Shameless brute force solution as an antidote to 05. Used `replace` to get rid of the spaces.
+- 07: Sorting.
