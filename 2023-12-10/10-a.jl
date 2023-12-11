@@ -1,5 +1,4 @@
 using DelimitedFiles
-using UnicodePlots
 using Logging
 
 debug_logger = ConsoleLogger(stderr, Logging.Error)
