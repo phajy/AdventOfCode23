@@ -16,3 +16,4 @@
 - 08: Mapping file didn't start at AAA. [`lcm`](https://docs.julialang.org/en/v1/base/math/#Base.lcm) - yay! And `falses`.
 - 09: `pushfirst!`
 - 10: Part A bit more awkward than anticipated. Part B forgot to replace the starting point when looking for enclosed spaces.
+- 11: `reverse`.
