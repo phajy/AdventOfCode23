@@ -17,4 +17,4 @@
 - 09: `pushfirst!`
 - 10: Part A bit more awkward than anticipated. Part B forgot to replace the starting point when looking for enclosed spaces.
 - 11: `reverse`. `count` can be used to count numbers `true`'s in an array.
-- 12: Strings are immutable. Who knew?
+- 12: Strings are immutable. Who knew? Also `Threads.@threads`. Memoization. Lots to learn with this one!
