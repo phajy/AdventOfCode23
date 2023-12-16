@@ -1,6 +1,6 @@
 using Logging
 using Crayons
-global_logger(ConsoleLogger(stderr, Logging.Error))
+global_logger(ConsoleLogger(stderr, Logging.Debug))
 
 # got to day 14 and I think I need a general routine that I can re-use
 # our convention for accessing 2D arrays is [row, column]
@@ -19,15 +19,15 @@ function parse_problem(filename)
 end
 
 function show_problem(parsed_problem)
-    g_fg = Crayon(foreground = :green)
-    r_fg = Crayon(foreground = :red)
-    b_fg = Crayon(foreground = :blue)
-    gr_fg = Crayon(foreground = :light_gray)
+    g_fg = Crayon(foreground=:green)
+    r_fg = Crayon(foreground=:red)
+    b_fg = Crayon(foreground=:blue)
+    gr_fg = Crayon(foreground=:light_gray)
     n_rows = size(parsed_problem)[1]
     n_columns = size(parsed_problem)[2]
     print("\u1b[H")
     print(g_fg, "╔")
-    for column in range(1, n_columns+2)
+    for column in range(1, n_columns + 2)
         print("═")
     end
     println("╗")
@@ -48,13 +48,14 @@ function show_problem(parsed_problem)
         println(" ║")
     end
     print("╚")
-    for column in range(1, n_columns+2)
+    for column in range(1, n_columns + 2)
         print("═")
     end
     println("╝")
 end
 
 function move_rocks(rock_map, direction)
+    moved = 0
     load = 0
     updated_rock_map = deepcopy(rock_map)
     n_rows = size(rock_map)[1]
@@ -74,29 +75,48 @@ function move_rocks(rock_map, direction)
                         updated_rock_map[row, column] = '.'
                         updated_rock_map[move_to_row, move_to_column] = 'O'
                         load -= direction[1]
+                        moved += 1
                     end
                 end
             end
         end
     end
-    return (updated_rock_map, load)
+    return (updated_rock_map, load, moved)
 end
 
-filename = "2023-12-14/14-test.txt"
-# filename = "2023-12-14/14-input.txt"
+# filename = "2023-12-14/14-test.txt"
+filename = "2023-12-14/14-input.txt"
 
 rock_map = parse_problem(filename)
 
 print("\033c")
+
+previous_maps = []
 load = 0
-last_load = 0
-ok = false
-while (!ok)
-    # show_problem(rock_map)
-    (rock_map, load) = move_rocks(rock_map, (-1, 0))
-    ok = (load - last_load == 0)
-    last_load = load
-    # sleep(1)
+index = 1
+finishing = false
+while index <= 1_000_000_000
+    # keep a cache of every state visited to identify cycles
+    start_map = deepcopy(rock_map)
+    if start_map ∈ previous_maps && finishing == false
+        println(index, " => this has previously been mapped at ", findfirst(x -> x == start_map, previous_maps))
+        Δ = index - findfirst(x -> x == start_map, previous_maps)
+        println("Δ = ", Δ)
+        # we can jump forward by integer multiples of Δ
+        index += Δ * (div(1_000_000_000 - index, Δ) - 1)
+        println("jumped to ", index)
+        finishing = true
+    end
+    push!(previous_maps, deepcopy(rock_map))
+    # do one cycle
+    for dir in [(-1, 0), (0, -1), (1, 0), (0, 1)]
+        moved = 1
+        while (moved != 0)
+            (rock_map, load, moved) = move_rocks(rock_map, dir)
+        end
+    end
+    println(index, " => ", load)
+    index += 1
 end
 show_problem(rock_map)
 println("Load = ", load)

@@ -19,3 +19,4 @@
 - 11: `reverse`. `count` can be used to count numbers `true`'s in an array.
 - 12: Strings are immutable. Who knew? Also `Threads.@threads` (but don't need this with an efficient code!). Memoization. Lots to learn with this one!
 - 13: `transpose`.
+- 14: Easy to be out of phase by ±1 if not careful.
