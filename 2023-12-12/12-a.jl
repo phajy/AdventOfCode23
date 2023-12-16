@@ -22,7 +22,7 @@ for index in range(1, size(spring_records)[1])
 
     # go through all possibilities and check for consistency
     good = 0
-    for i in 1:2^unknowns
+    for i = 1:2^unknowns
         # create new fixed spring list
         fixed_springs = ""
         k = i

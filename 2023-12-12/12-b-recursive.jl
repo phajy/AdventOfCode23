@@ -14,7 +14,10 @@ filename = "2023-12-12/12-input.txt"
 """
 
 # need to get memoization working properly!
-@memoize LRU{Tuple{Any,Any},Any}(maxsize=1024) function n_configs(map_fragment, spring_groups)
+@memoize LRU{Tuple{Any,Any},Any}(maxsize = 1024) function n_configs(
+    map_fragment,
+    spring_groups,
+)
     # if we have run out of groups there must be no more springs
     # @debug map_fragment, spring_groups
     if spring_groups == []
@@ -97,7 +100,7 @@ for index in range(1, size(spring_records)[1])
 
     n = n_configs(spring_records[index, 1], spring_groups)
     total += n
-    println(spring_records[index,1] * " => ", string(n))
+    println(spring_records[index, 1] * " => ", string(n))
 end
 
 println("Grant total = ", total)

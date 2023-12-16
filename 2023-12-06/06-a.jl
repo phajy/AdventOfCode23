@@ -6,9 +6,10 @@ global_logger(debug_logger)
 # filename = "2023-12-06/06-test.txt"
 filename = "2023-12-06/06-input.txt"
 
-times_and_distances = CSV.read(filename, DataFrame, header=false, delim=' ', ignorerepeated=true)
+times_and_distances =
+    CSV.read(filename, DataFrame, header = false, delim = ' ', ignorerepeated = true)
 
-num_races = ncol(times_and_distances)-1
+num_races = ncol(times_and_distances) - 1
 @debug "There are " * string(num_races) * " races"
 
 running_total = 1

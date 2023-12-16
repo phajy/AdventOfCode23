@@ -8,7 +8,7 @@ filename = "2023-12-04/04-input.txt"
 
 n_our_numbers = 10
 
-cards = CSV.read(filename, DataFrame, header=false, delim=' ', ignorerepeated=true)
+cards = CSV.read(filename, DataFrame, header = false, delim = ' ', ignorerepeated = true)
 total_points = 0
 for card in eachrow(cards)
     our_numbers = card[3:3+n_our_numbers-1]

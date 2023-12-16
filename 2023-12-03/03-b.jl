@@ -15,8 +15,8 @@ for (y, line) in enumerate(lines)
         # find surrounding numbers and store their starting coordinates
         found_numbers = []
         product = 1
-        for cx in range(x-1, x+1)
-            for cy in range(y-1, y+1)
+        for cx in range(x - 1, x + 1)
+            for cy in range(y - 1, y + 1)
                 if checkbounds(Bool, lines, cy)
                     if checkbounds(Bool, lines[cy], cx)
                         if match(r"\d", string(lines[cy][cx])) != nothing
@@ -24,8 +24,11 @@ for (y, line) in enumerate(lines)
                             numbers = eachmatch(r"\d+", lines[cy])
                             for number in numbers
                                 # see if this overlaps with the desired digit
-                                if number.offset <= cx <= number.offset + length(number.match) - 1
-                                    coords_and_val = (number.offset, cy, parse(Int, number.match))
+                                if number.offset <=
+                                   cx <=
+                                   number.offset + length(number.match) - 1
+                                    coords_and_val =
+                                        (number.offset, cy, parse(Int, number.match))
                                     if coords_and_val ∉ found_numbers
                                         push!(found_numbers, coords_and_val)
                                         @debug "adding " * number.match * " to list"

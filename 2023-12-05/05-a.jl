@@ -24,7 +24,7 @@ for line in lines
         end
         # a new map?
         if match(r"map:", line) != nothing
-            from_to = split(split(line, " ")[1],"-")
+            from_to = split(split(line, " ")[1], "-")
             # @debug "new map" from_to
             if !(from_to[1] in keys(dict))
                 dict[from_to[1]] = length(dict) + 1

@@ -6,16 +6,20 @@ global_logger(debug_logger)
 # filename = "2023-12-06/06-test.txt"
 filename = "2023-12-06/06-input.txt"
 
-times_and_distances = CSV.read(filename, DataFrame, header=false, delim=':', ignorerepeated=true)
+times_and_distances =
+    CSV.read(filename, DataFrame, header = false, delim = ':', ignorerepeated = true)
 
-num_races = ncol(times_and_distances)-1
+num_races = ncol(times_and_distances) - 1
 @debug "There are " * string(num_races) * " races"
 
 running_total = 1
 for race in range(1, num_races)
     total_time = parse(Int, replace(times_and_distances[1, race+1], " " => ""))
     target_distance = parse(Int, replace(times_and_distances[2, race+1], " " => ""))
-    @debug "Total time = " * string(total_time) * ", target distance = " * string(target_distance)
+    @debug "Total time = " *
+           string(total_time) *
+           ", target distance = " *
+           string(target_distance)
     n_wins = 0
     for t_hold in range(1, total_time)
         speed = t_hold

@@ -19,7 +19,14 @@ start_y = 0
 
 mappings = fill((0, 0, 0, 0), x_size, y_size)
 
-maps = [('|', 0, 1, 0, -1), ('-', 1, 0, -1, 0), ('L', 0, 1, 1, 0), ('J', 0, 1, -1, 0), ('7', 0, -1, -1, 0), ('F', 0, -1, 1, 0)]
+maps = [
+    ('|', 0, 1, 0, -1),
+    ('-', 1, 0, -1, 0),
+    ('L', 0, 1, 1, 0),
+    ('J', 0, 1, -1, 0),
+    ('7', 0, -1, -1, 0),
+    ('F', 0, -1, 1, 0),
+]
 
 # Create a mapping, find start point, create picture
 # Bottom left is (1, 1)
@@ -52,7 +59,13 @@ for replace in maps
         check_y = start_y + Δy
         @debug replace[1], check_x, check_y, Δx, Δy
         if check_x >= 1 && check_x <= x_size && check_y >= 1 && check_y <= y_size
-            if (mappings[check_x, check_y][1] == -Δx && mappings[check_x, check_y][2] == -Δy) || (mappings[check_x, check_y][3] == -Δx && mappings[check_x, check_y][4] == -Δy)
+            if (
+                mappings[check_x, check_y][1] == -Δx &&
+                mappings[check_x, check_y][2] == -Δy
+            ) || (
+                mappings[check_x, check_y][3] == -Δx &&
+                mappings[check_x, check_y][4] == -Δy
+            )
                 ok += 1
             end
         end
@@ -69,7 +82,7 @@ tiles_in_loop = []
 (x, y) = (start_x, start_y)
 (last_x, last_y) = (x, y)
 steps = 0
-while ((x,y) ≠ (start_x, start_y) || steps == 0)
+while ((x, y) ≠ (start_x, start_y) || steps == 0)
     push!(tiles_in_loop, (x, y))
     @debug x, y
     steps += 1
@@ -81,7 +94,7 @@ while ((x,y) ≠ (start_x, start_y) || steps == 0)
     (x, y) = (test_x, test_y)
 end
 println("Total steps in loop = " * string(steps))
-println("So maximum displacement = " * string(ceil(Int64,steps/2)))
+println("So maximum displacement = " * string(ceil(Int64, steps / 2)))
 
 # go through entire grid switching states between inside and outside the loop
 loop_map = fill(' ', y_size, x_size)
@@ -98,11 +111,12 @@ for y in range(1, y_size)
         loop_map[y_size-y+1, x] = char_array[y_size-y+1][x]
         if (x, y) ∈ tiles_in_loop
             if mappings[x, y][2] != 0 || mappings[x, y][4] != 0
-                if last_x == x-1
+                if last_x == x - 1
                     # we might have been moving parallel to a horizontal pipe
                     # so need to be careful about crossing in or out of region
                     sense = char_array[y_size-y+1][x]
-                    if (last_sense == 'L' && sense == '7') || (last_sense == 'F' && sense == 'J')
+                    if (last_sense == 'L' && sense == '7') ||
+                       (last_sense == 'F' && sense == 'J')
                         # this is a crossing; we'll be double counting so flip inside
                         inside = !inside
                     end

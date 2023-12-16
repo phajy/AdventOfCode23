@@ -8,6 +8,6 @@ running_total = 0
 for line in lines
     first_digit = parse(Int, match(r"\d", line).match)
     last_digit = parse(Int, match(r"\d", reverse(line)).match)
-    running_total = running_total + 10*first_digit + last_digit
+    running_total = running_total + 10 * first_digit + last_digit
 end
 println(running_total)

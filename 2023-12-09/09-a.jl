@@ -28,7 +28,7 @@ function next_in_history(line)
         end
     end
     # now do the reconstruction
-    for i in range(length(lines) - 1, 1, step=-1)
+    for i in range(length(lines) - 1, 1, step = -1)
         push!(lines[i], lines[i][end] + lines[i+1][end])
         @debug lines[i][end]
     end
@@ -36,7 +36,7 @@ function next_in_history(line)
 end
 
 sum_histories = 0
-for row in 1:size(histories, 1)
+for row = 1:size(histories, 1)
     line = histories[row, :]
     @debug "line is ", line
     sum_histories += next_in_history(line)

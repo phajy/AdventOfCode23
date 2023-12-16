@@ -19,7 +19,14 @@ start_y = 0
 
 mappings = fill((0, 0, 0, 0), x_size, y_size)
 
-maps = [('|', 0, 1, 0, -1), ('-', 1, 0, -1, 0), ('L', 0, 1, 1, 0), ('J', 0, 1, -1, 0), ('7', 0, -1, -1, 0), ('F', 0, -1, 1, 0)]
+maps = [
+    ('|', 0, 1, 0, -1),
+    ('-', 1, 0, -1, 0),
+    ('L', 0, 1, 1, 0),
+    ('J', 0, 1, -1, 0),
+    ('7', 0, -1, -1, 0),
+    ('F', 0, -1, 1, 0),
+]
 
 # Create a mapping, find start point, create picture
 # Bottom left is (1, 1)
@@ -52,7 +59,13 @@ for replace in maps
         check_y = start_y + Δy
         @debug replace[1], check_x, check_y, Δx, Δy
         if check_x >= 1 && check_x <= x_size && check_y >= 1 && check_y <= y_size
-            if (mappings[check_x, check_y][1] == -Δx && mappings[check_x, check_y][2] == -Δy) || (mappings[check_x, check_y][3] == -Δx && mappings[check_x, check_y][4] == -Δy)
+            if (
+                mappings[check_x, check_y][1] == -Δx &&
+                mappings[check_x, check_y][2] == -Δy
+            ) || (
+                mappings[check_x, check_y][3] == -Δx &&
+                mappings[check_x, check_y][4] == -Δy
+            )
                 ok += 1
             end
         end
@@ -68,7 +81,7 @@ end
 (x, y) = (start_x, start_y)
 (last_x, last_y) = (x, y)
 steps = 0
-while ((x,y) ≠ (start_x, start_y) || steps == 0)
+while ((x, y) ≠ (start_x, start_y) || steps == 0)
     @debug x, y
     steps += 1
     (test_x, test_y) = (x + mappings[x, y][1], y + mappings[x, y][2])
@@ -79,4 +92,4 @@ while ((x,y) ≠ (start_x, start_y) || steps == 0)
     (x, y) = (test_x, test_y)
 end
 println("Total steps in loop = " * string(steps))
-println("So maximum displacement = " * string(ceil(Int64,steps/2)))
+println("So maximum displacement = " * string(ceil(Int64, steps / 2)))

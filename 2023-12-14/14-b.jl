@@ -19,10 +19,10 @@ function parse_problem(filename)
 end
 
 function show_problem(parsed_problem)
-    g_fg = Crayon(foreground=:green)
-    r_fg = Crayon(foreground=:red)
-    b_fg = Crayon(foreground=:blue)
-    gr_fg = Crayon(foreground=:light_gray)
+    g_fg = Crayon(foreground = :green)
+    r_fg = Crayon(foreground = :red)
+    b_fg = Crayon(foreground = :blue)
+    gr_fg = Crayon(foreground = :light_gray)
     n_rows = size(parsed_problem)[1]
     n_columns = size(parsed_problem)[2]
     print("\u1b[H")
@@ -99,7 +99,11 @@ while index <= 1_000_000_000
     # keep a cache of every state visited to identify cycles
     start_map = deepcopy(rock_map)
     if start_map ∈ previous_maps && finishing == false
-        println(index, " => this has previously been mapped at ", findfirst(x -> x == start_map, previous_maps))
+        println(
+            index,
+            " => this has previously been mapped at ",
+            findfirst(x -> x == start_map, previous_maps),
+        )
         Δ = index - findfirst(x -> x == start_map, previous_maps)
         println("Δ = ", Δ)
         # we can jump forward by integer multiples of Δ

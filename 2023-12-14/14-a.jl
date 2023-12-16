@@ -27,7 +27,7 @@ function show_problem(parsed_problem)
     n_columns = size(parsed_problem)[2]
     print("\u1b[H")
     print(g_fg, "╔")
-    for column in range(1, n_columns+2)
+    for column in range(1, n_columns + 2)
         print("═")
     end
     println("╗")
@@ -48,7 +48,7 @@ function show_problem(parsed_problem)
         println(" ║")
     end
     print("╚")
-    for column in range(1, n_columns+2)
+    for column in range(1, n_columns + 2)
         print("═")
     end
     println("╝")

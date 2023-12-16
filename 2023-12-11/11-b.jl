@@ -16,7 +16,7 @@ sky = fill('.', x_size, y_size)
 empty_rows = fill(true, y_size)
 empty_columns = fill(true, x_size)
 galaxies = []
-for y in range(y_size, 1, step=-1)
+for y in range(y_size, 1, step = -1)
     for x in range(1, x_size)
         sky[x, y] = input_file[y][x]
         if sky[x, y] == '#'
@@ -33,12 +33,17 @@ for (index, galaxy) in enumerate(galaxies)
     for (second_index, second_galaxy) in enumerate(galaxies[1:index-1])
         x_range = sort([galaxy[1], second_galaxy[1]])
         Δx = x_range[2] - x_range[1]
-        Δx += (1_000_000-1)*count(empty_columns[x_range[1]:x_range[2]])
+        Δx += (1_000_000 - 1) * count(empty_columns[x_range[1]:x_range[2]])
         y_range = sort([galaxy[2], second_galaxy[2]])
         Δy = y_range[2] - y_range[1]
-        Δy += (1_000_000-1)*count(empty_rows[y_range[1]:y_range[2]])
+        Δy += (1_000_000 - 1) * count(empty_rows[y_range[1]:y_range[2]])
         Δs = Δx + Δy
-        @debug "Galaxy " * string(index) * " to " * string(second_index) * " is " * string(Δs)
+        @debug "Galaxy " *
+               string(index) *
+               " to " *
+               string(second_index) *
+               " is " *
+               string(Δs)
         s += Δs
     end
 end

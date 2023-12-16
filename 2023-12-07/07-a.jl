@@ -6,7 +6,7 @@ global_logger(debug_logger)
 # filename = "2023-12-07/07-test.txt"
 filename = "2023-12-07/07-input.txt"
 
-hands = CSV.read(filename, DataFrame, header=false, delim=' ', ignorerepeated=true)
+hands = CSV.read(filename, DataFrame, header = false, delim = ' ', ignorerepeated = true)
 
 function hand_type(cards)
     cards_array = sort(collect(cards))
@@ -20,7 +20,7 @@ function hand_type(cards)
             push!(n_cards, 1)
         end
     end
-    n_cards = sort(n_cards, rev=true)
+    n_cards = sort(n_cards, rev = true)
     if n_cards[1] == 5
         @debug "Five of a kind (7)"
         return 7
@@ -36,7 +36,7 @@ function hand_type(cards)
     if n_cards[1] == 3
         @debug "Three of a kind (4)"
         return 4
-    end 
+    end
     if n_cards[1] == 2 && n_cards[2] == 2
         @debug "Two pairs (3)"
         return 3
@@ -61,8 +61,22 @@ function compare_hands(hand_1, hand_2)
     end
     # hands are of the same type
     # compare card by card in order
-    dict = Dict('A'=>14, 'K'=>13, 'Q'=>12, 'J'=>11, 'T'=>10, '9'=>9, '8'=>8, '7'=>7, '6'=>6, '5'=>5, '4'=>4, '3'=>3, '2'=>2)
-    for i in range(1,5)
+    dict = Dict(
+        'A' => 14,
+        'K' => 13,
+        'Q' => 12,
+        'J' => 11,
+        'T' => 10,
+        '9' => 9,
+        '8' => 8,
+        '7' => 7,
+        '6' => 6,
+        '5' => 5,
+        '4' => 4,
+        '3' => 3,
+        '2' => 2,
+    )
+    for i in range(1, 5)
         card_1 = dict[hand_1[i]]
         card_2 = dict[hand_2[i]]
         if card_1 > card_2
@@ -78,10 +92,10 @@ end
 
 n_rows = size(hands, 1)
 
-sorted_hands = sort(hands, lt=(x,y)->compare_hands(x, y))
+sorted_hands = sort(hands, lt = (x, y) -> compare_hands(x, y))
 
 total = 0
-for row in 1:n_rows
+for row = 1:n_rows
     total += row * sorted_hands[row, 2]
 end
 

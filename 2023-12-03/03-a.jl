@@ -14,8 +14,8 @@ for (y, line) in enumerate(lines)
         ok = false
         # check to see if number is valid
         for x in range(number.offset, number.offset + length(number.match) - 1)
-            for cx in range(x-1,x+1)
-                for cy in range(y-1,y+1)
+            for cx in range(x - 1, x + 1)
+                for cy in range(y - 1, y + 1)
                     if checkbounds(Bool, lines, cy)
                         if checkbounds(Bool, lines[cy], cx)
                             if match(r"[\d.]", string(lines[cy][cx])) == nothing

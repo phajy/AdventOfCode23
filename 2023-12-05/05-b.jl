@@ -16,10 +16,10 @@ for line in lines
         # list of seeds?
         if match(r"^seeds", line) != nothing
             seeds = parse.(Int64, split(line, " ")[2:end])
-            for index in range(start=1, stop=length(seeds), step=2)
+            for index in range(start = 1, stop = length(seeds), step = 2)
                 push!(seed_ranges, (seeds[index], seeds[index] + seeds[index+1]))
             end
-            seed_ranges = sort(seed_ranges, lt=(x,y)->isless(x[1], y[1]))
+            seed_ranges = sort(seed_ranges, lt = (x, y) -> isless(x[1], y[1]))
         end
         # a new map?
         if match(r"map:", line) != nothing
@@ -29,7 +29,10 @@ for line in lines
     elseif !isempty(line)
         # we have a map (not a blank line)
         numbers = parse.(Int64, split(line, " "))
-        push!(map_from_to, (numbers[2], numbers[2] + numbers[3], numbers[1], numbers[1] + numbers[3]))
+        push!(
+            map_from_to,
+            (numbers[2], numbers[2] + numbers[3], numbers[1], numbers[1] + numbers[3]),
+        )
     elseif length(map_from_to) > 0
         # blank line means we can proceed with the mapping
         # make sure there is a blank line at the end of the file
@@ -42,7 +45,13 @@ for line in lines
                 for (index, seed_range) in enumerate(seed_ranges)
                     # see if range is a perfect subset of map range
                     if seed_range[1] >= map[1] && seed_range[2] <= map[2]
-                        push!(remapped_seeds, (seed_range[1] - map[1] + map[3], seed_range[2] - map[1] + map[3]))
+                        push!(
+                            remapped_seeds,
+                            (
+                                seed_range[1] - map[1] + map[3],
+                                seed_range[2] - map[1] + map[3],
+                            ),
+                        )
                         deleteat!(seed_ranges, index)
                         done = false
                         break
@@ -69,5 +78,5 @@ for line in lines
     end
 end
 
-seed_ranges = sort(seed_ranges, lt=(x,y)->isless(x[1], y[1]))
+seed_ranges = sort(seed_ranges, lt = (x, y) -> isless(x[1], y[1]))
 println("Closest location = ", seed_ranges[1][1])
