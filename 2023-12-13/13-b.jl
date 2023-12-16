@@ -32,7 +32,10 @@ function process_block(block)
             end
         end
         if discrepancies == 1
-            @debug "One change will produces a line of symmetry between " * string(x) * " and " * string(x + 1)
+            @debug "One change will produces a line of symmetry between " *
+                   string(x) *
+                   " and " *
+                   string(x + 1)
             return x
         end
     end
