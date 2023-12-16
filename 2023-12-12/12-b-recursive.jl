@@ -1,18 +1,20 @@
 using DelimitedFiles
+using LRUCache
 using Memoization
 using Logging
-global_logger(ConsoleLogger(stderr, Logging.Debug))
+global_logger(ConsoleLogger(stderr, Logging.Error))
 
 # it is clear that this needs to be done "properly" as brute force is just too hard!
 
-filename = "2023-12-12/12-test.txt"
-# filename = "2023-12-12/12-input.txt"
+# filename = "2023-12-12/12-test.txt"
+filename = "2023-12-12/12-input.txt"
 
 """
     Count the number of possible configurations of the given a map fragment showing the layout of springs that are compatible with the required pattern of springs
 """
 
-@memoize function n_configs(map_fragment, spring_groups)
+# need to get memoization working properly!
+@memoize LRU{Tuple{Any,Any},Any}(maxsize=1024) function n_configs(map_fragment, spring_groups)
     # if we have run out of groups there must be no more springs
     # @debug map_fragment, spring_groups
     if spring_groups == []
