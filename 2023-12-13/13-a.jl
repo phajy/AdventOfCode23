@@ -1,8 +1,10 @@
 using Logging
-global_logger(ConsoleLogger(stderr, Logging.Debug))
+global_logger(ConsoleLogger(stderr, Logging.Error))
 
-filename = "2023-12-13/13-test.txt"
-# filename = "2023-12-13/13-input.txt"
+# N.B. file has to end with new lines which indicates the end of an input block!
+
+# filename = "2023-12-13/13-test.txt"
+filename = "2023-12-13/13-input.txt"
 
 function process_block(block)
     # @debug "block => ", block
@@ -11,7 +13,7 @@ function process_block(block)
     n_rows = size(block)[1]
     n_cols = size(block)[2]
 
-    for x in range(2, n_cols - 1)
+    for x in range(1, n_cols - 1)
         ok = true
         for y in range(1, n_rows)
             x_off = 0
@@ -44,15 +46,18 @@ for i in range(1, length(ash_and_rocks))
         # ash . => false
         # rock # => true
         # @debug block_start, i - 1, i - block_start, length(ash_and_rocks[1])
-        block = falses(i - block_start, length(ash_and_rocks[1]))
+        block = falses(i - block_start, length(ash_and_rocks[block_start]))
         for y in range(block_start, i - 1)
-            for x in range(1, length(ash_and_rocks[1]))
+            for x in range(1, length(ash_and_rocks[block_start]))
                 if ash_and_rocks[y][x] == '#'
                     block[y+1-block_start, x] = true
                 end
             end
         end
+        @debug block_start
+        @debug "horizontal"
         total = total + process_block(block)
+        @debug "vertical"
         total = total + 100 * process_block(transpose(block))
         block_start = i + 1
     end
