@@ -20,21 +20,21 @@ function show_status(lenses)
     focusing_power = 0
     for index in range(1, 256)
         if lenses[index] ≠ []
-            print("Box ", index-1, ": ")
+            print("Box ", index - 1, ": ")
             for (i, lens) in enumerate(lenses[index])
                 print("[", lens[1], " ", lens[2], "] ")
-                focusing_power += index *  i * lens[2]
+                focusing_power += index * i * lens[2]
             end
             println()
         end
     end
-    return(focusing_power)
+    return (focusing_power)
 end
 
 # note that lenses has indices 1 to 256
 # boxes are numbered 0 to 255
 # box 0 is in index 1, etc.
-lenses = [ [] for _ in 1:256 ]
+lenses = [[] for _ = 1:256]
 
 instructions = readdlm(filename, ',')
 for step in instructions
@@ -47,7 +47,10 @@ for step in instructions
         focal_length = parse(Int, inst_split[2])
         @debug "Focal lengh = ", focal_length
         if inst_split[1] ∈ [t[1] for t in lenses[box+1]]
-            @debug "Lens ", inst_split[1], " is already in box so replace it with ", focal_length
+            @debug "Lens ",
+            inst_split[1],
+            " is already in box so replace it with ",
+            focal_length
             index = findfirst(item -> item == inst_split[1], [t[1] for t in lenses[box+1]])
             @debug "  found at index ", index
             lenses[box+1][index] = (inst_split[1], focal_length)
