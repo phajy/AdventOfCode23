@@ -19,10 +19,10 @@ function parse_problem(filename)
 end
 
 function show_problem(beam_map, parsed_problem, cur_row, cur_column)
-    g_fg = Crayon(foreground=:green)
-    r_fg = Crayon(foreground=:red)
-    b_fg = Crayon(foreground=:blue)
-    y_fg = Crayon(foreground=:yellow)
+    g_fg = Crayon(foreground = :green)
+    r_fg = Crayon(foreground = :red)
+    b_fg = Crayon(foreground = :blue)
+    y_fg = Crayon(foreground = :yellow)
     n_rows = size(parsed_problem)[1]
     n_columns = size(parsed_problem)[2]
     print("\u1b[H")
@@ -85,7 +85,7 @@ function trace_beam!(beam_map, mirror_map, row, column, Δrow, Δcolumn)
     # move laser beam to next square
     if mirror_map[row, column] == '.'
         new_row = row + Δrow
-        new_column = column + Δcolumn        
+        new_column = column + Δcolumn
         trace_beam!(beam_map, mirror_map, new_row, new_column, Δrow, Δcolumn)
     end
     # reflect laser beam
@@ -129,18 +129,18 @@ function trace_beam!(beam_map, mirror_map, row, column, Δrow, Δcolumn)
     # beam splitter
     if mirror_map[row, column] ∈ ['|', '-']
         if Δrow == 0 && mirror_map[row, column] == '|'
-            trace_beam!(beam_map, mirror_map, row+1, column, 1, 0)
-            trace_beam!(beam_map, mirror_map, row-1, column, -1, 0)
+            trace_beam!(beam_map, mirror_map, row + 1, column, 1, 0)
+            trace_beam!(beam_map, mirror_map, row - 1, column, -1, 0)
         end
         if Δrow == 0 && mirror_map[row, column] == '-'
-            trace_beam!(beam_map, mirror_map, row, column+Δcolumn, 0, Δcolumn)
+            trace_beam!(beam_map, mirror_map, row, column + Δcolumn, 0, Δcolumn)
         end
         if Δcolumn == 0 && mirror_map[row, column] == '-'
-            trace_beam!(beam_map, mirror_map, row, column+1, 0, 1)
-            trace_beam!(beam_map, mirror_map, row, column-1, 0, -1)
+            trace_beam!(beam_map, mirror_map, row, column + 1, 0, 1)
+            trace_beam!(beam_map, mirror_map, row, column - 1, 0, -1)
         end
         if Δcolumn == 0 && mirror_map[row, column] == '|'
-            trace_beam!(beam_map, mirror_map, row+Δrow, column, Δrow, 0)
+            trace_beam!(beam_map, mirror_map, row + Δrow, column, Δrow, 0)
         end
     end
 end
