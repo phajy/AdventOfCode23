@@ -24,8 +24,8 @@ function parse_problem(filename)
 end
 
 # read, charactarize, and plot the problem
-filename = "2023-12-17/17-test.txt"
-# filename = "2023-12-17/17-input.txt"
+# filename = "2023-12-17/17-test.txt"
+filename = "2023-12-17/17-input.txt"
 heat_map = parse_problem(filename)
 n_points = length(heat_map)
 n_rows = size(heat_map)[1]
