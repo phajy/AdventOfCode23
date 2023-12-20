@@ -144,6 +144,6 @@ for edge in x
         push!(y_coords, edge[1][3])
     end
 end
-lineplot(x_coords, y_coords, canvas=DotCanvas, xlim=(1, n_columns), ylim=(1, n_rows), border=:ascii)
+scatterplot(x_coords, y_coords, canvas=DotCanvas, xlim=(1, n_columns), ylim=(1, n_rows), border=:ascii)
 
 solution_summary(model)
