@@ -22,5 +22,4 @@
 - 14: Easy to be out of phase by ±1 if not careful.
 - 15: [Comprehensions and generators](https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions).
 - 16: `count` syntax for counting elements in an array that satisfy some condition.
-- 17: Learn linear programming! [JuMP](https://jump.dev/JuMP.jl/stable/). Should really use lazy constraints but I haven't because I got a solution quickly enough.
-
+- 17: Learn linear programming! [JuMP](https://jump.dev/JuMP.jl/stable/). Tried lazy constraints which was an interesting exercise. However, redefining the nodes to have different directional states was a better approach and reduced the number of additional constraints.

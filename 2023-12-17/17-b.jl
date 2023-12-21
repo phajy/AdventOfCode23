@@ -1,5 +1,7 @@
 # Day 17
-# Should really introduce lazy constraints. I expect that would be much faster. At the moment we introduce *all* constraints in one go; most of which won't ever be needed.
+# Updated strategy. Add another label to each node indicating the direction that the path is pointing.
+# (1, 2, 3, 4) => (N, E, S, W)
+# this way we can ensure that the path does not continue in the same direction or double back on itself
 
 using JuMP
 using Gurobi
@@ -35,10 +37,10 @@ heatmap(heat_map)
 
 # start a new model
 model = Model(Gurobi.Optimizer)
-x = Dict{NTuple{4,Int},VariableRef}()
+x = Dict{NTuple{6,Int},VariableRef}()
 
 # set up the model
-# variable   : x_ij is 1 if we go from i to j, 0 if not
+# variable   : x_ijklmn is 1 if we go from (i,j) direction k to (l,m) direction n
 # constraint : number of routes into every cell must equal number of routes out, except for the start and end which need to have one out and one in, respectively
 # constraint : eliminate straight routes through any point
 # objective  : minimize the sum of the costs along the route
@@ -52,30 +54,49 @@ costs = Dict()
 # costs = zeros(n_points, n_points)
 for column in range(1, n_columns)
     for row in range(1, n_rows)
-        for Δ in range(4, 10)
-            for Δsign in [-1, 1]
-                for Δrow in [true, false]
-                    new_row = row + Δ * Δsign * Δrow
-                    new_column = column + Δ * Δsign * !Δrow
+        for direction in range(1, 4)
+            Δrow = 0
+            Δcolumn = 0
+            if direction == 1
+                new_directions = [2, 4]
+                Δrow = -1
+            end
+            if direction == 2
+                new_directions = [1, 3]
+                Δcolumn = 1
+            end
+            if direction == 3
+                new_directions = [2, 4]
+                Δrow = 1
+            end
+            if direction == 4
+                new_directions = [1, 3]
+                Δcolumn = -1
+            end
+            for new_direction in new_directions
+                for Δ in range(4, 10)
+                    new_row = row + Δ * Δrow
+                    new_column = column + Δ * Δcolumn
                     if checkbounds(Bool, heat_map, new_row, new_column)
                         row_range = sort([row, new_row])
                         col_range = sort([column, new_column])
                         # cost is only occured when *entering* a cell
-                        costs[(row, column, new_row, new_column)] = sum(heat_map[row_range[1]:row_range[2], col_range[1]:col_range[2]]) - heat_map[row, column]
+                        # this might get redefined multiple times but I think that's OK
+                        costs[(row, column, direction, new_row, new_column, new_direction)] = sum(heat_map[row_range[1]:row_range[2], col_range[1]:col_range[2]]) - heat_map[row, column]
                         # define a variable for this path
-                        x[row, column, new_row, new_column] = @variable(model, base_name = "x[$row,$column,$new_row,$new_column]", binary = true)
+                        x[row, column, direction, new_row, new_column, new_direction] = @variable(model, base_name = "x[$row,$column,$direction,$new_row,$new_column,$new_direction]", binary = true)
                         # in and out constraints
-                        if !haskey(flow_out, (row, column))
-                            flow_out[(row, column)] = [(new_row, new_column)]
+                        if !haskey(flow_out, (row, column, direction))
+                            flow_out[(row, column, direction)] = [(row, column, direction, new_row, new_column, new_direction)]
                         else
-                            current_out = flow_out[(row, column)]
-                            flow_out[(row, column)] = push!(current_out, (new_row, new_column))
+                            current_out = flow_out[(row, column, direction)]
+                            flow_out[(row, column, direction)] = push!(current_out, (row, column, direction, new_row, new_column, new_direction))
                         end
-                        if !haskey(flow_in, (new_row, new_column))
-                            flow_in[(new_row, new_column)] = [(row, column)]
+                        if !haskey(flow_in, (new_row, new_column, new_direction))
+                            flow_in[(new_row, new_column, new_direction)] = [(row, column, direction, new_row, new_column, new_direction)]
                         else
-                            current_in = flow_in[(new_row, new_column)]
-                            flow_in[(new_row, new_column)] = push!(current_in, (row, column))
+                            current_in = flow_in[(new_row, new_column, new_direction)]
+                            flow_in[(new_row, new_column, new_direction)] = push!(current_in, (row, column, direction, new_row, new_column, new_direction))
                         end
                     end
                 end
@@ -84,47 +105,25 @@ for column in range(1, n_columns)
     end
 end
 
-@constraint(model, sum(x[1, 1, k, l] for (k, l) in flow_out[1, 1]) == 1)
-@constraint(model, sum(x[i, j, 1, 1] for (i, j) in flow_in[1, 1]) == 0)
-@constraint(model, sum(x[n_rows, n_columns, k, l] for (k, l) in flow_out[n_rows, n_columns]) == 0)
-@constraint(model, sum(x[i, j, n_rows, n_columns] for (i, j) in flow_in[n_rows, n_columns]) == 1)
+@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[1, 1, 2]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[1, 1, 3]) == 1)
+@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[1, 1, 1]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[1, 1, 4]) == 0)
+@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[n_rows, n_columns, 1]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[n_rows, n_columns, 4]) == 0)
+@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[n_rows, n_columns, 2]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[n_rows, n_columns, 3]) == 1)
 
 for column in range(1, n_columns)
     for row in range(1, n_rows)
         # skip in and out points
         if !((row == 1 && column == 1) || (row == n_rows && column == n_columns))
-            @debug "adding constraint", row, column
-            @constraint(model, sum(x[i, j, row, column] for (i, j) in flow_in[row, column]) == sum(x[row, column, k, l] for (k, l) in flow_out[row, column]))
-        end
-    end
-end
-
-# get rid of all double straight paths
-# ah, also need to get rid of double-backs (didn't realise until I saw this in a solution)
-for row in range(1, n_rows)
-    for column in range(1, n_columns)
-        for Δ_1 in range(4, 10)
-            for Δ_2 in range(4, 10)
-                for Δsign in [-1, 1]
-                    for Δrow in [true, false]
-                        # straight through
-                        new_row_1 = row + Δ_1 * Δsign * Δrow
-                        new_column_1 = column + Δ_1 * Δsign * !Δrow
-                        new_row_2 = row - Δ_2 * Δsign * Δrow
-                        new_column_2 = column - Δ_2 * Δsign * !Δrow
-                        if checkbounds(Bool, heat_map, new_row_1, new_column_1) && checkbounds(Bool, heat_map, new_row_2, new_column_2)
-                            # @debug "trying to ban the move ", new_row_2, ", ", new_column_2, " => ", row, ", ", column, " => ", new_row_1, ", ", new_column_1
-                            @constraint(model, x[new_row_2, new_column_2, row, column] + x[row, column, new_row_1, new_column_1] <= 1)
-                        end
-                        # double-back
-                        new_row_1 = row + Δ_1 * Δsign * Δrow
-                        new_column_1 = column + Δ_1 * Δsign * !Δrow
-                        new_row_2 = row + Δ_2 * Δsign * Δrow
-                        new_column_2 = column + Δ_2 * Δsign * !Δrow
-                        if checkbounds(Bool, heat_map, new_row_1, new_column_1) && checkbounds(Bool, heat_map, new_row_2, new_column_2)
-                            # @debug "trying to ban the move ", new_row_2, ", ", new_column_2, " => ", row, ", ", column, " => ", new_row_1, ", ", new_column_1
-                            @constraint(model, x[new_row_2, new_column_2, row, column] + x[row, column, new_row_1, new_column_1] <= 1)
-                        end
+            for direction in range(1, 4)
+                if haskey(flow_in, (row, column, direction)) && haskey(flow_out, (row, column, direction))
+                    @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[row, column, direction]) == sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[row, column, direction]))
+                    @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[row, column, direction]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[row, column, direction]) <= 2)
+                else
+                    if !haskey(flow_in, (row, column, direction)) && haskey(flow_out, (row, column, direction))
+                        @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[row, column, direction]) == 0)
+                    end
+                    if !haskey(flow_out, (row, column, direction)) && haskey(flow_in, (row, column, direction))
+                        @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[row, column, direction]) == 0)
                     end
                 end
             end
@@ -132,17 +131,19 @@ for row in range(1, n_rows)
     end
 end
 
-@objective(model, Min, sum(costs[i, j, k, l] * x[i, j, k, l] for (i, j, k, l) in keys(costs)))
+@objective(model, Min, sum(costs[i, j, k, l, m, n] * x[i, j, k, l, m, n] for (i, j, k, l, m, n) in keys(costs)))
+
 optimize!(model)
 
 x_coords = Int64[]
 y_coords = Int64[]
 for edge in x
     if value(edge[2]) > 0.5
+        @debug edge
         push!(x_coords, edge[1][2])
-        push!(x_coords, edge[1][4])
+        push!(x_coords, edge[1][5])
         push!(y_coords, edge[1][1])
-        push!(y_coords, edge[1][3])
+        push!(y_coords, edge[1][4])
     end
 end
 scatterplot(x_coords, y_coords, canvas=DotCanvas, xlim=(1, n_columns), ylim=(1, n_rows), border=:ascii)
