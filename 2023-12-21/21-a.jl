@@ -25,11 +25,11 @@ end
 
 function show_problem(parsed_problem, positions)
     dict = Dict(
-        '.' => Crayon(foreground = :blue),
-        '#' => Crayon(foreground = :red),
-        'S' => Crayon(foreground = :green),
-        'O' => Crayon(foreground = :yellow),
-        'g' => Crayon(foreground = :green),
+        '.' => Crayon(foreground=:blue),
+        '#' => Crayon(foreground=:red),
+        'S' => Crayon(foreground=:green),
+        'O' => Crayon(foreground=:yellow),
+        'g' => Crayon(foreground=:green),
     )
     n_rows = size(parsed_problem)[1]
     n_columns = size(parsed_problem)[2]
@@ -76,10 +76,8 @@ function next_step(current_positions)
             if checkbounds(Bool, problem, new_row, new_column)
                 if problem[new_row, new_column] == '.' ||
                    problem[new_row, new_column] == 'S'
-                    if steps_taken < 6
-                        if (new_row, new_column) ∉ new_positions
-                            push!(new_positions, (new_row, new_column))
-                        end
+                    if (new_row, new_column) ∉ new_positions
+                        push!(new_positions, (new_row, new_column))
                     end
                 end
             end
