@@ -82,21 +82,73 @@ for column in range(1, n_columns)
                         col_range = sort([column, new_column])
                         # cost is only occured when *entering* a cell
                         # this might get redefined multiple times but I think that's OK
-                        costs[(row, column, direction, new_row, new_column, new_direction)] = sum(heat_map[row_range[1]:row_range[2], col_range[1]:col_range[2]]) - heat_map[row, column]
+                        costs[(
+                            row,
+                            column,
+                            direction,
+                            new_row,
+                            new_column,
+                            new_direction,
+                        )] =
+                            sum(
+                                heat_map[
+                                    row_range[1]:row_range[2],
+                                    col_range[1]:col_range[2],
+                                ],
+                            ) - heat_map[row, column]
                         # define a variable for this path
-                        x[row, column, direction, new_row, new_column, new_direction] = @variable(model, base_name = "x[$row,$column,$direction,$new_row,$new_column,$new_direction]", binary = true)
+                        x[row, column, direction, new_row, new_column, new_direction] =
+                            @variable(
+                                model,
+                                base_name = "x[$row,$column,$direction,$new_row,$new_column,$new_direction]",
+                                binary = true
+                            )
                         # in and out constraints
                         if !haskey(flow_out, (row, column, direction))
-                            flow_out[(row, column, direction)] = [(row, column, direction, new_row, new_column, new_direction)]
+                            flow_out[(row, column, direction)] = [(
+                                row,
+                                column,
+                                direction,
+                                new_row,
+                                new_column,
+                                new_direction,
+                            )]
                         else
                             current_out = flow_out[(row, column, direction)]
-                            flow_out[(row, column, direction)] = push!(current_out, (row, column, direction, new_row, new_column, new_direction))
+                            flow_out[(row, column, direction)] = push!(
+                                current_out,
+                                (
+                                    row,
+                                    column,
+                                    direction,
+                                    new_row,
+                                    new_column,
+                                    new_direction,
+                                ),
+                            )
                         end
                         if !haskey(flow_in, (new_row, new_column, new_direction))
-                            flow_in[(new_row, new_column, new_direction)] = [(row, column, direction, new_row, new_column, new_direction)]
+                            flow_in[(new_row, new_column, new_direction)] = [(
+                                row,
+                                column,
+                                direction,
+                                new_row,
+                                new_column,
+                                new_direction,
+                            )]
                         else
                             current_in = flow_in[(new_row, new_column, new_direction)]
-                            flow_in[(new_row, new_column, new_direction)] = push!(current_in, (row, column, direction, new_row, new_column, new_direction))
+                            flow_in[(new_row, new_column, new_direction)] = push!(
+                                current_in,
+                                (
+                                    row,
+                                    column,
+                                    direction,
+                                    new_row,
+                                    new_column,
+                                    new_direction,
+                                ),
+                            )
                         end
                     end
                 end
@@ -105,25 +157,74 @@ for column in range(1, n_columns)
     end
 end
 
-@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[1, 1, 2]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[1, 1, 3]) == 1)
-@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[1, 1, 1]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[1, 1, 4]) == 0)
-@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[n_rows, n_columns, 1]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[n_rows, n_columns, 4]) == 0)
-@constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[n_rows, n_columns, 2]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[n_rows, n_columns, 3]) == 1)
+@constraint(
+    model,
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[1, 1, 2]) +
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[1, 1, 3]) == 1
+)
+@constraint(
+    model,
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[1, 1, 1]) +
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[1, 1, 4]) == 0
+)
+@constraint(
+    model,
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[n_rows, n_columns, 1]) +
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[n_rows, n_columns, 4]) == 0
+)
+@constraint(
+    model,
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[n_rows, n_columns, 2]) +
+    sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[n_rows, n_columns, 3]) == 1
+)
 
 for column in range(1, n_columns)
     for row in range(1, n_rows)
         # skip in and out points
         if !((row == 1 && column == 1) || (row == n_rows && column == n_columns))
             for direction in range(1, 4)
-                if haskey(flow_in, (row, column, direction)) && haskey(flow_out, (row, column, direction))
-                    @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[row, column, direction]) == sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[row, column, direction]))
-                    @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[row, column, direction]) + sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[row, column, direction]) <= 2)
+                if haskey(flow_in, (row, column, direction)) &&
+                   haskey(flow_out, (row, column, direction))
+                    @constraint(
+                        model,
+                        sum(
+                            x[i, j, k, l, m, n] for
+                            (i, j, k, l, m, n) in flow_in[row, column, direction]
+                        ) == sum(
+                            x[i, j, k, l, m, n] for
+                            (i, j, k, l, m, n) in flow_out[row, column, direction]
+                        )
+                    )
+                    @constraint(
+                        model,
+                        sum(
+                            x[i, j, k, l, m, n] for
+                            (i, j, k, l, m, n) in flow_in[row, column, direction]
+                        ) + sum(
+                            x[i, j, k, l, m, n] for
+                            (i, j, k, l, m, n) in flow_out[row, column, direction]
+                        ) <= 2
+                    )
                 else
-                    if !haskey(flow_in, (row, column, direction)) && haskey(flow_out, (row, column, direction))
-                        @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_out[row, column, direction]) == 0)
+                    if !haskey(flow_in, (row, column, direction)) &&
+                       haskey(flow_out, (row, column, direction))
+                        @constraint(
+                            model,
+                            sum(
+                                x[i, j, k, l, m, n] for
+                                (i, j, k, l, m, n) in flow_out[row, column, direction]
+                            ) == 0
+                        )
                     end
-                    if !haskey(flow_out, (row, column, direction)) && haskey(flow_in, (row, column, direction))
-                        @constraint(model, sum(x[i, j, k, l, m, n] for (i, j, k, l, m, n) in flow_in[row, column, direction]) == 0)
+                    if !haskey(flow_out, (row, column, direction)) &&
+                       haskey(flow_in, (row, column, direction))
+                        @constraint(
+                            model,
+                            sum(
+                                x[i, j, k, l, m, n] for
+                                (i, j, k, l, m, n) in flow_in[row, column, direction]
+                            ) == 0
+                        )
                     end
                 end
             end
@@ -131,7 +232,13 @@ for column in range(1, n_columns)
     end
 end
 
-@objective(model, Min, sum(costs[i, j, k, l, m, n] * x[i, j, k, l, m, n] for (i, j, k, l, m, n) in keys(costs)))
+@objective(
+    model,
+    Min,
+    sum(
+        costs[i, j, k, l, m, n] * x[i, j, k, l, m, n] for (i, j, k, l, m, n) in keys(costs)
+    )
+)
 
 optimize!(model)
 
@@ -146,6 +253,13 @@ for edge in x
         push!(y_coords, edge[1][4])
     end
 end
-scatterplot(x_coords, y_coords, canvas=DotCanvas, xlim=(1, n_columns), ylim=(1, n_rows), border=:ascii)
+scatterplot(
+    x_coords,
+    y_coords,
+    canvas = DotCanvas,
+    xlim = (1, n_columns),
+    ylim = (1, n_rows),
+    border = :ascii,
+)
 
 solution_summary(model)

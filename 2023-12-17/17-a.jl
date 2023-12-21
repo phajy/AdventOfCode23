@@ -60,21 +60,33 @@ for column in range(1, n_columns)
                         row_range = sort([row, new_row])
                         col_range = sort([column, new_column])
                         # cost is only occured when *entering* a cell
-                        costs[(row, column, new_row, new_column)] = sum(heat_map[row_range[1]:row_range[2], col_range[1]:col_range[2]]) - heat_map[row, column]
+                        costs[(row, column, new_row, new_column)] =
+                            sum(
+                                heat_map[
+                                    row_range[1]:row_range[2],
+                                    col_range[1]:col_range[2],
+                                ],
+                            ) - heat_map[row, column]
                         # define a variable for this path
-                        x[row, column, new_row, new_column] = @variable(model, base_name = "x[$row,$column,$new_row,$new_column]", binary = true)
+                        x[row, column, new_row, new_column] = @variable(
+                            model,
+                            base_name = "x[$row,$column,$new_row,$new_column]",
+                            binary = true
+                        )
                         # in and out constraints
                         if !haskey(flow_out, (row, column))
                             flow_out[(row, column)] = [(new_row, new_column)]
                         else
                             current_out = flow_out[(row, column)]
-                            flow_out[(row, column)] = push!(current_out, (new_row, new_column))
+                            flow_out[(row, column)] =
+                                push!(current_out, (new_row, new_column))
                         end
                         if !haskey(flow_in, (new_row, new_column))
                             flow_in[(new_row, new_column)] = [(row, column)]
                         else
                             current_in = flow_in[(new_row, new_column)]
-                            flow_in[(new_row, new_column)] = push!(current_in, (row, column))
+                            flow_in[(new_row, new_column)] =
+                                push!(current_in, (row, column))
                         end
                     end
                 end
@@ -85,15 +97,25 @@ end
 
 @constraint(model, sum(x[1, 1, k, l] for (k, l) in flow_out[1, 1]) == 1)
 @constraint(model, sum(x[i, j, 1, 1] for (i, j) in flow_in[1, 1]) == 0)
-@constraint(model, sum(x[n_rows, n_columns, k, l] for (k, l) in flow_out[n_rows, n_columns]) == 0)
-@constraint(model, sum(x[i, j, n_rows, n_columns] for (i, j) in flow_in[n_rows, n_columns]) == 1)
+@constraint(
+    model,
+    sum(x[n_rows, n_columns, k, l] for (k, l) in flow_out[n_rows, n_columns]) == 0
+)
+@constraint(
+    model,
+    sum(x[i, j, n_rows, n_columns] for (i, j) in flow_in[n_rows, n_columns]) == 1
+)
 
 for column in range(1, n_columns)
     for row in range(1, n_rows)
         # skip in and out points
         if !((row == 1 && column == 1) || (row == n_rows && column == n_columns))
             @debug "adding constraint", row, column
-            @constraint(model, sum(x[i, j, row, column] for (i, j) in flow_in[row, column]) == sum(x[row, column, k, l] for (k, l) in flow_out[row, column]))
+            @constraint(
+                model,
+                sum(x[i, j, row, column] for (i, j) in flow_in[row, column]) ==
+                sum(x[row, column, k, l] for (k, l) in flow_out[row, column])
+            )
         end
     end
 end
@@ -111,18 +133,28 @@ for row in range(1, n_rows)
                         new_column_1 = column + Δ_1 * Δsign * !Δrow
                         new_row_2 = row - Δ_2 * Δsign * Δrow
                         new_column_2 = column - Δ_2 * Δsign * !Δrow
-                        if checkbounds(Bool, heat_map, new_row_1, new_column_1) && checkbounds(Bool, heat_map, new_row_2, new_column_2)
+                        if checkbounds(Bool, heat_map, new_row_1, new_column_1) &&
+                           checkbounds(Bool, heat_map, new_row_2, new_column_2)
                             # @debug "trying to ban the move ", new_row_2, ", ", new_column_2, " => ", row, ", ", column, " => ", new_row_1, ", ", new_column_1
-                            @constraint(model, x[new_row_2, new_column_2, row, column] + x[row, column, new_row_1, new_column_1] <= 1)
+                            @constraint(
+                                model,
+                                x[new_row_2, new_column_2, row, column] +
+                                x[row, column, new_row_1, new_column_1] <= 1
+                            )
                         end
                         # double-back
                         new_row_1 = row + Δ_1 * Δsign * Δrow
                         new_column_1 = column + Δ_1 * Δsign * !Δrow
                         new_row_2 = row + Δ_2 * Δsign * Δrow
                         new_column_2 = column + Δ_2 * Δsign * !Δrow
-                        if checkbounds(Bool, heat_map, new_row_1, new_column_1) && checkbounds(Bool, heat_map, new_row_2, new_column_2)
+                        if checkbounds(Bool, heat_map, new_row_1, new_column_1) &&
+                           checkbounds(Bool, heat_map, new_row_2, new_column_2)
                             # @debug "trying to ban the move ", new_row_2, ", ", new_column_2, " => ", row, ", ", column, " => ", new_row_1, ", ", new_column_1
-                            @constraint(model, x[new_row_2, new_column_2, row, column] + x[row, column, new_row_1, new_column_1] <= 1)
+                            @constraint(
+                                model,
+                                x[new_row_2, new_column_2, row, column] +
+                                x[row, column, new_row_1, new_column_1] <= 1
+                            )
                         end
                     end
                 end
@@ -131,7 +163,11 @@ for row in range(1, n_rows)
     end
 end
 
-@objective(model, Min, sum(costs[i, j, k, l] * x[i, j, k, l] for (i, j, k, l) in keys(costs)))
+@objective(
+    model,
+    Min,
+    sum(costs[i, j, k, l] * x[i, j, k, l] for (i, j, k, l) in keys(costs))
+)
 optimize!(model)
 
 x_coords = Int64[]
@@ -144,6 +180,13 @@ for edge in x
         push!(y_coords, edge[1][3])
     end
 end
-scatterplot(x_coords, y_coords, canvas=DotCanvas, xlim=(1, n_columns), ylim=(1, n_rows), border=:ascii)
+scatterplot(
+    x_coords,
+    y_coords,
+    canvas = DotCanvas,
+    xlim = (1, n_columns),
+    ylim = (1, n_rows),
+    border = :ascii,
+)
 
 solution_summary(model)

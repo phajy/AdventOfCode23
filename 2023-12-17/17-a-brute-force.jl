@@ -92,7 +92,7 @@ function traverse_map!(
                             current_cost + sum(heat_map[row:new_row, column:new_column])
                         if new_cost < best_so_far
                             best_so_far = traverse_map!(
-                                length+1,
+                                length + 1,
                                 route_map,
                                 best_so_far,
                                 new_cost,
@@ -120,6 +120,8 @@ heatmap(heat_map)
 
 best_so_far = 1_000_000_000
 route_map = fill('.', size(heat_map))
-best_so_far = traverse_map!(0,route_map, best_so_far, -heat_map[1, 1], heat_map, 1, 1, 1, 0)
+best_so_far =
+    traverse_map!(0, route_map, best_so_far, -heat_map[1, 1], heat_map, 1, 1, 1, 0)
 route_map = fill('.', size(heat_map))
-best_so_far = traverse_map!(0,route_map, best_so_far, -heat_map[1, 1], heat_map, 1, 1, 0, 1)
+best_so_far =
+    traverse_map!(0, route_map, best_so_far, -heat_map[1, 1], heat_map, 1, 1, 0, 1)
