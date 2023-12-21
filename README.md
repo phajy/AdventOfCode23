@@ -24,3 +24,6 @@
 - 16: `count` syntax for counting elements in an array that satisfy some condition.
 - 17: Learn linear programming! [JuMP](https://jump.dev/JuMP.jl/stable/). Tried lazy constraints which was an interesting exercise. However, redefining the nodes to have different directional states was a better approach and reduced the number of additional constraints.
 - 18: [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula) - wish I'd known about this before! "Obvious" result that makes the computation much easier. `parse` can take `base` argument.
+- 19:
+- 20:
+- 21: I wonder what part B will bring.
