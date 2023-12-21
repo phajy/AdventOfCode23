@@ -20,7 +20,7 @@ area = 0.0
 circumference = 0.0
 for index in range(1, size(problem, 1))
     direction = problem[index, 3][8]
-    distance = parse(Int64, problem[index, 3][3:7], base=16)
+    distance = parse(Int64, problem[index, 3][3:7], base = 16)
     (Δx, Δy) = dict[direction]
     Δx = Δx * distance
     Δy = Δy * distance
