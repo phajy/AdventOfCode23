@@ -24,17 +24,17 @@ for index in range(1, size(problem, 1))
     Δy = Δy * problem[index, 2]
     circumference += abs(Δx) + abs(Δy)
     # "shoelace" formula (https://en.wikipedia.org/wiki/Shoelace_formula)
-    area += 0.5*(2*y+Δy)*(-Δx)
+    area += 0.5 * (2 * y + Δy) * (-Δx)
     x += Δx
     y += Δy
     push!(trench_x, x)
     push!(trench_y, y)
 end
 @debug "x, y = ", x, y
-area += 0.5*(y)*(x)
+area += 0.5 * (y) * (x)
 
 plot(trench_x, trench_y)
 
 println("Area: ", area)
 println("Circumference: ", circumference)
-println("Requied area = ", abs(area) + circumference/2 + 1)
+println("Requied area = ", abs(area) + circumference / 2 + 1)
