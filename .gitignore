@@ -26,3 +26,4 @@ Manifest.toml
 # Other fles and directories to ignore. Added manually
 Learning/
 .vscode/settings.json
+Project.toml
