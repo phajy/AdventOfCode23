@@ -97,7 +97,10 @@ for check_block in range(1, length(blocks))
             end
         end
     end
-    @debug "The number of blocks falling as a result of deleting block ", check_block, " is ", length(falling)
+    @debug "The number of blocks falling as a result of deleting block ",
+    check_block,
+    " is ",
+    length(falling)
     total_falling += length(falling)
 end
 
