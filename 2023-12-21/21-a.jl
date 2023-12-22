@@ -25,11 +25,11 @@ end
 
 function show_problem(parsed_problem, positions)
     dict = Dict(
-        '.' => Crayon(foreground=:blue),
-        '#' => Crayon(foreground=:red),
-        'S' => Crayon(foreground=:green),
-        'O' => Crayon(foreground=:yellow),
-        'g' => Crayon(foreground=:green),
+        '.' => Crayon(foreground = :blue),
+        '#' => Crayon(foreground = :red),
+        'S' => Crayon(foreground = :green),
+        'O' => Crayon(foreground = :yellow),
+        'g' => Crayon(foreground = :green),
     )
     n_rows = size(parsed_problem)[1]
     n_columns = size(parsed_problem)[2]
