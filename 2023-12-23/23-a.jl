@@ -2,7 +2,6 @@
 
 using JuMP
 using Gurobi
-using UnicodePlots
 using Logging
 
 # set debug level
