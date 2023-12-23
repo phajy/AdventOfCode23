@@ -28,3 +28,4 @@
 - 20: 
 - 21: I wonder what part B will bring. Ug - this one is tricky! Haven't done part B yet.
 - 22: Intersections.
+- 23: Part A took longer than expected given that code was recycled.
