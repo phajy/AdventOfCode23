@@ -32,7 +32,7 @@ function check_for_intersection(r_v_A, r_v_B, xy_min, xy_max)
     vx_B = r_v_B[4]
     vy_B = r_v_B[5]
     A = [Float64(vx_A) -Float64(vx_B); Float64(vy_A) -Float64(vy_B)]
-    b = Float64[x0_B - x0_A, y0_B - y0_A]
+    b = Float64[x0_B-x0_A, y0_B-y0_A]
     prob = LinearProblem(A, b)
     sol = solve(prob)
     if isfinite(sol.u[1]) && isfinite(sol.u[2])
@@ -50,7 +50,7 @@ end
 # consider intersections with all other hailstonres paths in the future
 n_intersections = 0
 for a in range(2, length(r_v))
-    for b in range(1, a-1)
+    for b in range(1, a - 1)
         if check_for_intersection(r_v[a], r_v[b], xy_min, xy_max)
             @info "Found intersection between ", a, " and ", b
             n_intersections += 1
