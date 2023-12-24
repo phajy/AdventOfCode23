@@ -168,17 +168,13 @@ function subtour_elimination_callback(cb_data)
     # any remaining points must form one or more loops - let's just eliminate all of them
     if length(from) > 0
         con = @build_constraint(
-            sum(x[i, j, k, l] for (i, j, k, l) in to_eliminate) <= length(to_eliminate) -1
+            sum(x[i, j, k, l] for (i, j, k, l) in to_eliminate) <= length(to_eliminate) - 1
         )
         MOI.submit(model, MOI.LazyConstraint(cb_data), con)
     end
 end
 
-set_attribute(
-    model,
-    MOI.LazyConstraintCallback(),
-    subtour_elimination_callback,
-)
+set_attribute(model, MOI.LazyConstraintCallback(), subtour_elimination_callback)
 
 @objective(
     model,
