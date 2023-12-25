@@ -25,7 +25,7 @@
 - 17: Learn linear programming! [JuMP](https://jump.dev/JuMP.jl/stable/). Tried lazy constraints which was an interesting exercise. However, redefining the nodes to have different directional states was a better approach and reduced the number of additional constraints.
 - 18: [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula) - wish I'd known about this before! "Obvious" result that makes the computation much easier. `parse` can take `base` argument.
 - 19: `eval(Meta.parse(expression))`. Haven't done part B yet.
-- 20: 
+- 20: Use arrays to "allow" mutable elements in dictionary.
 - 21: I wonder what part B will bring. Ug - this one is tricky! Haven't done part B yet.
 - 22: Intersections.
 - 23: Part A took longer than expected given that code was recycled. Part B - need to eliminate sub-tours.
